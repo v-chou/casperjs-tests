@@ -1,10 +1,11 @@
+//usage casperjs ORFormPHSScrape.js
+
 var links = [];
 
 var casper = require('casper').create({
     verbose: true,
-    // logLevel: 'debug'
+    logLevel: 'debug'
 });
-
 
 
 function getLinks() {
@@ -22,18 +23,6 @@ function getPDF() {
         return e.getAttribute('href');
     });
 }
-
-
-// casper.start('http://google.fr/', function() {
-//    // Wait for the page to be loaded
-//    this.waitForSelector('form[action="/search"]');
-// });
-
-// casper.then(function() {
-//    // search for 'casperjs' from google form
-//    this.fill('form[action="/search"]', { q: 'casperjs' }, true);
-// });
-
 
 casper.start('file:///C:/Users/valchou/Documents/UIAutomation/phs800.html', function() {
 	casper.wait(500);
@@ -57,6 +46,3 @@ casper.run(function() {
     this.echo(pdf.length + ' PDF forms found:');
     this.echo(' + ' + pdf.join('\n + ')).exit();
 });
-
-
-// html body div.container-fluid div div.tab-content div#fphs800.col-md-12.phs800.tab-pane.margin-top10.active table#phsTable.table.table-striped.margin-top20.tablesorter tbody tr.historyItem td span.margin-left5 a
