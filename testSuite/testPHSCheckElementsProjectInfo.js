@@ -29,7 +29,7 @@ phantom.injectJs('./lib/utils.js');
 phantom.injectJs('./properties/or-tests.properties');
 
 
-casper.options.viewportSize = {width: 1521, height: 780};
+casper.options.viewportSize = {width: 1600, height: 1400};
 casper.on('page.error', function(msg, trace) {
    this.echo('Error: ' + msg, 'ERROR');
    for(var i=0; i<trace.length; i++) {
@@ -44,10 +44,10 @@ casper.test.begin('Check Project Information page UI elements', function(test){
     // We're waiting for the existence of the login username field before sending login info
     // --------------------------------------------------------------------------------
     // Sends login info when executing the script manually (not part of a test suite);
-    if (manualFlag === true){
-         casper.waitForSelector("form#fm1 input[name='username']");     
-         casper.sendLoginInfo();
-    }
+	    if (manualFlag === true){
+	         casper.waitForSelector("form#fm1 input[name='username']");     
+	         casper.sendLoginInfo();
+	    }
     //-----------------------------------------------------------------------------------
 	      
 	      casper.wait(2000, function(){

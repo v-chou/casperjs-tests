@@ -8,57 +8,60 @@
 // Date: September 6, 2016
 // Last Revised: January 5, 2017
 // 
-// Usage: casperjs test testPHSCreateIncomePublicSfi.js --MAN=true/false --UID=your_username --PWD=your_password --OPT=Yes
+// Usage: casperjs test testPHSCreateTravelSfi.js --UID=your_username --PWD=your_password --OPT=Yes
 // 
 // ========================================================================================
 var yourUsername = casper.cli.get('UID');
 var yesNoOption = casper.cli.get('OPT');
-var manualFlag = casper.cli.get('MAN');
+var createNewPHSForm = 'Create New PHS filing';
+var currentPHSTemp = 'https://or-forms-qa.ucdavis.edu/orforms/detailsPHS?formId=11794';
 var x = require('casper').selectXPath;
+var manualFlag = casper.cli.get('MAN');
 
 if (manualFlag === true){
-    casper.echo('selected manual testing mode, enabling proper path to properties and helper scripts');
+    //********************************************
+    casper.echo('Selected manual testing mode, enabling proper path to properties and helper scripts');
      phantom.injectJs('../lib/casLogin.js');
      phantom.injectJs('../lib/utils.js');
      phantom.injectJs('../properties/or-tests.properties');
+    //*********************************************
 } 
-phantom.injectJs('./lib/casLogin.js');
-phantom.injectJs('./lib/utils.js');
-phantom.injectJs('./properties/or-tests.properties');
-
 //set browser user agent
-casper.userAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X)');
+// casper.userAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X)');
 casper.options.viewportSize = {width: 1600, height: 1400};
 casper.on('page.error', function(msg, trace) {
-   this.echo('Error: ' + msg, 'ERROR');
-   for(var i=0; i<trace.length; i++) {
-       var step = trace[i];
-       this.echo('   ' + step.file + ' (line ' + step.line + ')', 'ERROR');
-   }
+    this.echo('Error: ' + msg, 'ERROR');
+    for(var i=0; i<trace.length; i++) {
+        var step = trace[i];
+        this.echo('   ' + step.file + ' (line ' + step.line + ')', 'ERROR');
+    }
 });
 
-casper.test.begin('Create Public Income SFI', function(test) {
+casper.test.begin('Create a Travel SFI test', function(test) {
    casper.start(orFormsQA, function() {
 
     // When we open the OR Forms landing page, it get redirected to the CAS login page
     // We're waiting for the existence of the login username field before sending login info
-    
+    // --------------------------------------------------------------------------------
     // Sends login info when executing the script manually (not part of a test suite);
     if (manualFlag === true){
          casper.waitForSelector("form#fm1 input[name='username']");     
          casper.sendLoginInfo();
     }
     //-----------------------------------------------------------------------------------
+
    test.assertUrlMatch(this.getCurrentUrl(), orFormsQA);
    
  });
    // clientScripts:['ms-qa.ucdavis.edu/orforms/resources/js/bootstrap.combined.min.js']
    casper.wait(2000, function(){
-	  var respon = this.status(false);
+    var respon = this.status(false);
     // this.test.assertHttpStatus(302, casSecurityCheck + ' CAS security redirected');
-		
-	});
-   casper.thenOpen(currentPHS, function(){
+  });
+  casper.clear();
+  phantom.clearCookies();
+
+  casper.thenOpen(currentPHSTemp, function(){
     this.wait(500);
     this.test.assertHttpStatus(200, orFormsQA + ' is up');
     // this.echo('==================');
@@ -87,10 +90,10 @@ casper.test.begin('Create Public Income SFI', function(test) {
           'input[name="involveHumanSubjects"]': yesNoOption,
           'input[name="proposalSponsorAwardNumber"]': 'SponsorAward ' + mydigits,
           'input[name="irbNumber"]': 'IRB#' + shortDigits,
-          'textarea[name="describeResearch"]': 'Inserted by CasperJS on: ' + mystring + text2202chars,
+          'textarea[name="describeResearch"]': 'Filling describe research textbox on: ' + mystring + " " + text2202chars,
           'input[name="beginDate"]': todaysDate,
           'input[name="endDate"]': futureDate
-        }, false);
+        }, true);
         // this.capture('projFill2.png');
       });
 
@@ -101,57 +104,46 @@ casper.test.begin('Create Public Income SFI', function(test) {
     } else {
         this.echo('Continuting with PHS form');
     }
-    // casper.then(function(){
-
+      // Disabling the IP Rights add SFI button
+      this.click('input#ipRights2');
+      this.click('input#travel1');  
+      this.capture('./images/noTravelModal.png');
+      this.echo('======= clicking on Enter Rquired SFI button ===========');
+    
+      this.waitUntilVisible('button.travel-btn', function(){
+          test.assertVisible('button.travel-btn');
+          this.click('button.travel-btn');
+      });
       
-
-      this.echo('\n--- Filling out PHS Form ---'); 
-
-      casper.selectOptionByText('#otherEntity.control-form','Acrobat');
-      casper.selectOptionByText('#entityType.control-form','Publicly traded entity');
-      test.assertNotVisible('span.no-sfi',noSfi, 'No SFI message not displayed');
-
-      this.fillSelectors('form.phs-form', {
-        'input[name="statementType"]': 'CORRECTION',
-        'input[name="toolIncome"]':'5001',
-        'input[name="ipRights"]': 'NO',
-        'input[name="travel"]': 'NO',
-        'input[name="management"]': 'NO',
-        'input[name="signature"]': 'signed by CasperJS script on: '+ mydigits
-      }, false);
-      
-      this.capture('./images/noModal.png');
-      this.echo('======= clicking on Add SFI button ===========')
-      this.clickLabel('Add SFI', 'button');
+    
       /*
         Waits for the modal dialog to appear then fill the necessary fields
       */
-      this.waitUntilVisible('#publicModal', function(){
-        test.assertVisible('h3#publicModalLabel','SFI Disclosure for Publicly Traded Entity');
-        // Hitting submit to generate expected errors:
-        // this.clickLabel('Submit', 'button');
-        this.fillSelectors('form.sfi-modal', {
-          'select[name="relationship"]': 'SPOUSE_RDP',
-          'input[name="consulting"]': '501',
-          'input[name="dividends"]': '500',
-          'input[name="honoraria"]': '500',
-          'input[name="authorship"]': '500',
-          'input[name="inKind"]': '250',
-          'input[name="diem"]': '250',
-          'input[name="salary"]': '2000',
-          'input[name="stipend"]': '250',
-          'input[name="other"]': 'laboratory items',
-          'input[name="otherAmount"]': '250',
-          'textarea[name="entityPurpose"]': 'Inserted by CasperJS on: ' + mystring + '. ' + text2202chars,
-          'input[name="sfiRelated"]': 'YES',
-          'textarea[name="statement"]': 'Inserted by CasperJS on: ' + mystring + '. ' + text2202chars
+     this.echo('======= Travel modal window visible ===========');
+     this.waitUntilVisible('#travelModal', function(){
+            this.wait(1000, function(){
+              // Waiting for modal to render
+              test.assertVisible('h3#travelModalLabel','SFI Disclosure for Travel');
+                this.capture('./images/travelModal.png');
+            });
+        // Filling form 
+        this.fillSelectors('.sfi-travel-modal', {
+          'select[name="travelEntityId"]': 'Coruscant Foundation',
+          'input[name="travelLocation"]': 'Paris, France',
+          'textarea[name="travelReason"]': 'Travel Reason Comments entered here by CasperJS automation on: ' + mydigits,
+          'input[name="travelSfiRelated"]': yesNoOption,
+          'textarea[name="travelStatement"]': 'Travel Statement Comments entered here by CasperJS automation on: ' + mydigits        
         }, false);
-        // this.capture('./images/incomeModalFilling.png');
-        this.clickLabel('Submit', 'button');
 
-      });    
+         this.sendKeys("input[name='beginDate']", "09/25/2016");
+         this.sendKeys("input[name='endDate']", "10/05/2016");
 
-      // this.echo('--- Finished filling out Form ---\n'); 
+         this.wait(1000, function(){
+              this.capture('./images/travelsficomplete.png');
+              this.click("form .btn.btn-primary.submit-travel-modal");
+         });
+    });
+ 
       this.capture('./images/afterModal.png');
 });
 

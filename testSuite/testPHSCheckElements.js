@@ -136,8 +136,6 @@ casper.test.begin('Check PHS Disclosure form UI elements', function(test) {
         test.assertSelectorHasText('div.form-group', 'III. Disclosure');   
         test.assertSelectorHasText('.control-label', 'Reason for Disclosure:');
 
-        // this.echo(this.fetchText('li #statementType1.INITIAL label'));
-        // //TODO: Check label as well. can retrieve all labels using li label, but can't find a way to specify a particular one
         test.assertSelectorHasText('#statementType1', 'INITIAL');    
         test.assertSelectorHasText('#statementType2', 'MANDATORY'); 
         test.assertSelectorHasText('#statementType3', 'UPDATE'); 
@@ -180,7 +178,12 @@ casper.test.begin('Check PHS Disclosure form UI elements', function(test) {
         test.assertVisible('button.determine', 'Check SFI Status button is visible');
         test.assertSelectorHasText('button.determine', 'Add SFI');
 
-        //TODO: Need to check for table headings
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'SFI Type');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Entity Name');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Recipient');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Dollar Range');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'SFI Opinion');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Action');
 
 
         // Intellectual Property section
@@ -195,7 +198,12 @@ casper.test.begin('Check PHS Disclosure form UI elements', function(test) {
             'the IP Rights "No" radio button element exists'
         );
 
-        //TODO: Need to check for table headings
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'SFI Type');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Entity Name');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Recipient');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Dollar Range');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'SFI Opinion');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Action');
 
         // Travel section
         this.echo('\n --- Travel disclosure tests ---');
@@ -209,7 +217,12 @@ casper.test.begin('Check PHS Disclosure form UI elements', function(test) {
             'the Travel "No" radio button element exists'
         );
 
-        //TODO: Need to check for table headings
+        
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'SFI Type');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Travel Location');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Begin Date');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'End Date');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Action');
 
         // Management disclosure section
         this.echo('\n --- Management disclosure tests ---');
@@ -223,22 +236,31 @@ casper.test.begin('Check PHS Disclosure form UI elements', function(test) {
             'the Management "No" radio button element exists'
         );
 
-        //TODO: Need to check for table headings
+        
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'SFI Type');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Position');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Responsibilities');
+        test.assertSelectorHasText('div.col-md-offset-1 .table th', 'Action');
+
 
         //Research Project section
         this.echo('\n --- Research Project  tests ---');
         test.assertSelectorHasText('div.col-md-4', 'VIII. Research Projects (only required if a SFI was reported above.)', 'Research Project label found');
         test.assertSelectorHasText('h3.panel-title', 'Research Projects', 'Research Projects panel heading found');
 
-        //TODO: Need to check for table headings
-
-        test.assertSelectorHasText('a[href]', 'Manage PHS Projects', 'Found link to Projects page'); 
-
+        test.assertSelectorHasText('div.col-md-12 .table tr', 'Project Title');
+        test.assertSelectorHasText('div.col-md-12 .table tr', 'Role');
+        test.assertSelectorHasText('div.col-md-12 .table tr', 'Project Start');
+        test.assertSelectorHasText('div.col-md-12 .table tr', 'Project End');
+        test.assertSelectorHasText('div.col-md-12 .table tr', 'Funding Agency');
+        test.assertSelectorHasText('div.col-md-12 .table tr', 'Human Subjects?');
+        test.assertSelectorHasText('a[href]', 'Manage PHS Projects', 'Found link to Project Information page'); 
 
         //Signature box
         this.echo('\n --- Signature textbox tests ---');
         test.assertSelectorHasText('span.control-label', 'Signature', 'Signature label found');
-
+        test.assertVisible('button.draft', 'Save Draft button is visible');
+        test.assertVisible('.cancel','Cancel button is visible');
         //TODO: Need to check for table headings
 
 });

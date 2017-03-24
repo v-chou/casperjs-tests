@@ -1,16 +1,17 @@
 // ========================================================================================
-// File: Verification of UI elements on the new PHS-800 form.
+// File: Verification of Error messages on the Intellectual Property Rights modal dialog.
 // 
 // Asserts all available UI elements on page
 // 
 // Uses the PhantomJS and CasperJS libraries
 // Author: Val Chou
 // Date: September 6, 2016
-// Last Revised: January 5, 2017
+// Last Revised: February 1, 2017
 // 
-// Usage: casperjs test testPHSCheckElements.js --UID=your_username --PWD=your_password --OPT=Yes
+// Usage: casperjs test testPHSIPRightsModalError.js --UID=your_username --PWD=your_password --OPT=Yes
 // 
 // ========================================================================================
+var utils = require('utils');
 var yourUsername = casper.cli.get('UID');
 var yesNoOption = casper.cli.get('OPT');
 var amountIncome = '5001';
@@ -122,17 +123,22 @@ casper.test.begin('Checking error messages on intellectual rights sfi modal wind
           
         test.assertSelectorHasText('h3#rightsModalLabel','SFI Disclosure for Intellectual Property Rights');
         // Hitting submit to generate expected errors:
-        this.click('button.submit-ip-modal');
+        // this.click('button.submit-ip-modal');
+        this.clickLabel('Submit', 'button');
         test.assertSelectorHasText('.ip-entity-error','You must select or add an entity.');
         test.assertSelectorHasText('.ip-amount-error', 'You must indicate the total amount received from this entity.');
         test.assertSelectorHasText('.ip-relationship-error','You must indicate an individual to whom the interest applies.');
         test.assertSelectorHasText('.ip-description-error','This question requires an answer.');
         test.assertSelectorHasText('.ip-reasonable-error','This question requires an answer.');
         test.assertSelectorHasText('.ip-statement-error','This question requires an answer.');
+
     });
-    this.wait(1000, function(){
-        this.capture('./images/modalIPErrors.png');
-    });    
+    // this.wait(1000, function(){
+    //     this.capture('./images/modalIPErrors.png');
+    //     utils.dump(this.getElementInfo('#rightsModal .submit-ip-modal'));
+    // });    
+
+    
 });
 
     casper.run(function() {

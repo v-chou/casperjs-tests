@@ -1,5 +1,5 @@
 // ========================================================================================
-// File: Verification of UI elements on the new PHS-800 form.
+// File: Sets appropriate paths to correct utils and property files and logins into system 
 // 
 // Asserts all available UI elements on page
 // 
@@ -8,7 +8,7 @@
 // Date: September 6, 2016
 // Last Revised: January 5, 2017
 // 
-// Usage: casperjs test testPHSTemplate.js --UID=your_username --PWD=your_password --OPT=Yes
+// Usage: casperjs test startPHSTests.js --MAN=true|false --UID=your_username --PWD=your_password --OPT=YES|NO
 // 
 // ========================================================================================
 var utils = require('utils');
